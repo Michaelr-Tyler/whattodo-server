@@ -1,0 +1,32 @@
+[
+    {
+        "model": "whattodoapi.todotags",
+        "pk": 1,
+        "fields": {
+            "tag":1,
+            "todo":1
+        }
+    }, {
+        "model": "whattodoapi.todotags",
+        "pk": 2,
+        "fields": {
+            "tag":2,
+            "todo":2
+        }
+    }, {
+        "model": "whattodoapi.todotags",
+        "pk": 3,
+        "fields": {
+            "tag":3,
+            "todo":3
+        }
+    }, {
+        "model": "whattodoapi.todotags",
+        "pk": 4,
+        "fields": {
+            "tag":4,
+            "todo":3
+        }
+    }
+    
+]

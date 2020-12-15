@@ -1,0 +1,27 @@
+[
+    {
+        "model": "whattodoapi.categories",
+        "pk": 1,
+        "fields": {
+            "label": "Do"
+        }
+    }, {
+        "model": "whattodoapi.categories",
+        "pk": 2,
+        "fields": {
+            "label": "Schedule"
+        }
+    }, {
+        "model": "whattodoapi.categories",
+        "pk": 3,
+        "fields": {
+            "label": "Delegate"
+        }
+    }, {
+        "model": "whattodoapi.categories",
+        "pk": 4,
+        "fields": {
+            "label": "Delete"
+        }
+    }
+]
