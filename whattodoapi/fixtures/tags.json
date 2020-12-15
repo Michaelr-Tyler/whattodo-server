@@ -1,0 +1,27 @@
+[
+    {
+        "model": "whattodoapi.tags",
+        "pk": 1,
+        "fields": {
+            "label": "School"
+        }
+    }, {
+        "model": "whattodoapi.tags",
+        "pk": 2,
+        "fields": {
+            "label": "Work"
+        }
+    }, {
+        "model": "whattodoapi.tags",
+        "pk": 3,
+        "fields": {
+            "label": "Vacation"
+        }
+    }, {
+        "model": "whattodoapi.tags",
+        "pk": 4,
+        "fields": {
+            "label": "Family"
+        }
+    }
+]

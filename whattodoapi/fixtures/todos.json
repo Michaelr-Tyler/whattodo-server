@@ -1,0 +1,33 @@
+[
+    {
+        "model": "whattodoapi.todos",
+        "pk": 1,
+        "fields":{
+            "task": "Finish capstone",
+            "urgent": 8,
+            "important": 9,
+            "category": 1,
+            "user":1
+        }
+    }, {
+        "model": "whattodoapi.todos",
+        "pk": 2,
+        "fields":{
+            "task": "Apply for jobs",
+            "urgent": 4,
+            "important": 9,
+            "category": 2,
+            "user":1
+        }
+    }, {
+        "model": "whattodoapi.todos",
+        "pk": 3,
+        "fields":{
+            "task": "Plan Next vacation",
+            "urgent": 7,
+            "important": 3,
+            "category": 3,
+            "user":1
+        }
+    }
+]
