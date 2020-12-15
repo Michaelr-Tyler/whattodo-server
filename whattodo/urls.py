@@ -18,12 +18,14 @@ from django.db import router
 from django.urls import path
 from django.urls.conf import include
 from rest_framework import routers
-from whattodoapi.views import login_user, register_user
+from whattodoapi.views import login_user, register_user, CategoryViewSet
 from django.conf.urls.static import static
 from django.conf import settings
 
 """Router"""
 router = routers.DefaultRouter(trailing_slash=False)
+router.register(r'categories', CategoryViewSet, 'category')
+
 
 urlpatterns = [
     path('', include(router.urls)),
