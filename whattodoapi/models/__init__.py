@@ -1,5 +1,5 @@
-from .categories import Categories
-from .tags import Tags
-from .todotags import TodoTags
-from .todos import Todos
+from .Categories import Categories
+from .Tags import Tags
+from .Todotags import TodoTags
+from .Todos import Todos
 
