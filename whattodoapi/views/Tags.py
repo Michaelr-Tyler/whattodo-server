@@ -16,7 +16,7 @@ class TagViewSet(ViewSet):
         return Response(serialized_Tag.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """ """
+        """Handle POST requests for tags"""
         tag = Tags()
         tag.label = request.data["label"]
         
@@ -28,10 +28,17 @@ class TagViewSet(ViewSet):
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
     
     def update(self, request, pk=None):
-        """"""
+        """Handle PUT requests for tags"""
+        try:
+            tag = Tags.objects.get(pk=pk)
+        except Tags.DoesNotExist:
+            return Response({'message':'tag not found'}, status=status.HTTP_404_NOT_FOUND)
+        tag.label = request.data["label"]
+        tag.save()
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk=None):
-        """"""
+        """Handle DELETE requests for tags"""
         try:
             tag = Tags.objects.get(pk=pk)
             tag.delete()
