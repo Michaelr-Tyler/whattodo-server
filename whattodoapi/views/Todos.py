@@ -13,9 +13,15 @@ class TodoViewSet(ViewSet):
     """Todo view set"""
 
     def list(self,request):
-        """GET a new Todo object"""
+        """GET a Todo object"""
         todos = Todos.objects.all()
         serialized_todos = TodoSerializer(todos, many=True, context={'request': request})
+        return Response(serialized_todos.data, status=status.HTTP_200_OK)
+
+    def retrieve(self,request,pk=None):
+        """GET a single Todo object"""
+        todo = Todos.objects.get(pk=pk)
+        serialized_todos = TodoSerializer(todo, many=False, context={'request': request})
         return Response(serialized_todos.data, status=status.HTTP_200_OK)
 
 
