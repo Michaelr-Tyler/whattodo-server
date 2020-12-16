@@ -21,7 +21,7 @@ class TodoViewSet(ViewSet):
 
 
     def create(self, request):
-        """Handle Post Operations
+        """Handle todo Operations
         returns -- JSON Serialized todo instance
         """
         app_user = User.objects.get(id=request.auth.user.id)
@@ -65,14 +65,70 @@ class TodoViewSet(ViewSet):
         return Response(serializer.data)
 
     def update(self, request, pk=None):
-        """ """
+        """ Handle an update request for a todos
+        User will remain the same
+        """
+        # get the todo trying to be updated based on the primary key
+        todo = Todos.objects.get(pk=pk)
+
+        #prevent users from modifying other users todos
+        app_user = User.objects.get(id=request.auth.user.id)
+        if app_user.id != todo.user_id:
+            return Response({"message": "Permission denied"}, status=status.HTTP_401_UNAUTHORIZED)
+    # Save basic properties
+        
+        todo.urgent = request.data["urgent"]
+        todo.important = request.data["important"]
+    #assign category based on the responses important and urgent rankings
+    # Refactor 1 #
+        if request.data["urgent"] >= 5 and request.data["important"] >= 5:
+            todo.category = Categories.objects.get(pk=1)
+        elif request.data["urgent"] < 5 and request.data["important"] >= 5:
+            todo.category = Categories.objects.get(pk=2)
+        elif request.data["urgent"] >= 5 and request.data["important"] < 5:
+            todo.category = Categories.objects.get(pk=3)
+        elif request.data["urgent"] < 5 and request.data["important"] < 5:
+            todo.category = Categories.objects.get(pk=4)
+        todo.task = request.data["task"]
+
+    #todotags
+    #first lets get any tag ids from the request, this should be an array
+        tag_ids = request.data["tagIds"]
+    #next loop through the tags and match em up
+        try:
+            request_tags = [Tags.objects.get(pk=tag_id) for tag_id in tag_ids]
+        except Tags.DoesNotExist:
+                return Response({'message': 'request contains a tagId for a non-existent tag'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    #after that save that todo
+        try: 
+            todo.save()
+        except ValidationError as ex:
+            return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
+
+    #now we need to grab the Todo tags and delete any no longer associated with the todo as well as any new ones
+        current_todotags = TodoTags.objects.filter(todo=todo)
+    # create new queryset from the collection above that is ONLY those todotags for which the 'tag' attribute value doesn't match
+    # any of the tags specified in the request. Then delete them all.
+        current_todotags.exclude(tag__in=request_tags).delete()
+    # for each tag in the set of 'tags' from the request, try to find an existing entry in the current_todotags that
+    # matches that relationship; if one doesn't exist, create it
+        for tag in request_tags:
+            try:
+                current_todotags.get(tag=tag)
+            except TodoTags.DoesNotExist:
+                new_todotag = TodoTags(todo=todo, tag=tag)
+                new_todotag.save()
+
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+
 
     def destroy(self, request, pk=None):
         """Handle DELETE requests"""
         try:
             todo = Todos.objects.get(pk=pk)
 
-            #Prevent users from deleting posts from other users
+            #Prevent users from deleting todos from other users
             app_user = User.objects.get(id=request.auth.user.id)
             if todo.user_id == app_user.id:
                 todo.delete()
