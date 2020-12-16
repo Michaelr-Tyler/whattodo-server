@@ -20,14 +20,15 @@ from django.db import router
 from django.urls import path
 from django.urls.conf import include
 from rest_framework import routers
-from whattodoapi.views import login_user, register_user, CategoryViewSet, TodoViewSet
+from whattodoapi.views import login_user, register_user, CategoryViewSet, TodoViewSet, TagViewSet
 from django.conf.urls.static import static
 from django.conf import settings
 
 """Router"""
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'categories', CategoryViewSet, 'category')
-router.register(r'todos', TodoViewSet, 'category')
+router.register(r'todos', TodoViewSet, 'todo')
+router.register(r'tags', TagViewSet, 'tag')
 
 
 urlpatterns = [
