@@ -20,6 +20,7 @@ class TodoViewSet(ViewSet):
         todo.user = app_user    
         todo.urgent = request.data["urgent"]
         todo.important = request.data["important"]
+        
 
     #assign category based on the responses important and urgent rankings
         if request.data["urgent"] >= 5 and request.data["important"] >= 5:
@@ -28,7 +29,7 @@ class TodoViewSet(ViewSet):
             todo.category = Categories.objects.get(pk=2)
         elif request.data["urgent"] >= 5 and request.data["important"] < 5:
             todo.category = Categories.objects.get(pk=3)
-        elif request.data["urgent"] < 5 and request.data["important"] >= 5:
+        elif request.data["urgent"] < 5 and request.data["important"] < 5:
             todo.category = Categories.objects.get(pk=4)
         todo.task = request.data["task"]
 
