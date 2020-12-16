@@ -8,7 +8,7 @@ class Todos(models.Model):
     task = models.CharField(max_length=100)
     urgent = models.IntegerField()
     important = models.IntegerField()
-    category = models.OneToOneField("Categories", on_delete=models.CASCADE)
+    category = models.OneToOneField("Categories", on_delete=models.CASCADE, unique=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @property
