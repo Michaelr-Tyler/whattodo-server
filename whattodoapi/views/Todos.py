@@ -1,5 +1,6 @@
 """Category ViewSet and Serializers"""
 from django.core.exceptions import ValidationError
+from django.views.generic.base import TemplateResponseMixin
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status, serializers
@@ -11,11 +12,19 @@ from rest_framework.response import Response
 
 class TodoViewSet(ViewSet):
     """Todo view set"""
+
+    def list(self,request):
+        """GET a new Todo object"""
+        todos = Todos.objects.all()
+        serialized_todos = TodoSerializer(todos, many=True, context={'request': request})
+        return Response(serialized_todos.data, status=status.HTTP_200_OK)
+
+
     def create(self, request):
         """Handle Post Operations
         returns -- JSON Serialized todo instance
         """
-        app_user = User.objects.get(id=request.auth.user.id )
+        app_user = User.objects.get(id=request.auth.user.id)
         todo = Todos()
         todo.user = app_user    
         todo.urgent = request.data["urgent"]
@@ -23,6 +32,7 @@ class TodoViewSet(ViewSet):
         
 
     #assign category based on the responses important and urgent rankings
+    # Refactor 1 #
         if request.data["urgent"] >= 5 and request.data["important"] >= 5:
             todo.category = Categories.objects.get(pk=1)
         elif request.data["urgent"] < 5 and request.data["important"] >= 5:
@@ -33,7 +43,7 @@ class TodoViewSet(ViewSet):
             todo.category = Categories.objects.get(pk=4)
         todo.task = request.data["task"]
 
-    #now its time for them todotags
+    #todotags
     #first lets get any tag ids from the request, this should be an array
         tag_ids = request.data["tagIds"]
     #next loop through the tags and match em up
@@ -54,11 +64,26 @@ class TodoViewSet(ViewSet):
         serializer = TodoSerializer(todo, context={'request': request})
         return Response(serializer.data)
 
-    def list(self,request):
-        """GET a new Todo object"""
-        todos = Todos.objects.all()
-        serialized_todos = TodoSerializer(todos, many=True, context={'request': request})
-        return Response(serialized_todos.data, status=status.HTTP_200_OK)
+    def update(self, request, pk=None):
+        """ """
+
+    def destroy(self, request, pk=None):
+        """Handle DELETE requests"""
+        try:
+            todo = Todos.objects.get(pk=pk)
+
+            #Prevent users from deleting posts from other users
+            app_user = User.objects.get(id=request.auth.user.id)
+            if todo.user_id == app_user.id:
+                todo.delete()
+                return Response({}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({"message": "Permission Denied"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        except Todos.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -90,3 +115,11 @@ class TodoSerializer(serializers.ModelSerializer):
         model = Todos
         fields = ('id', 'task', 'urgent', 'important', 'category', 'user', 'tags')
         depth = 1
+
+            
+            
+            
+            
+            
+    # 1 #Refactor later to maybe get the Label instead of the PK in case PK changed,
+    #And if that label doesnt exist to change it to uncategorized which can never be deleted
