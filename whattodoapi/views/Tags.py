@@ -1,8 +1,11 @@
 """Tag ViewSet and Serializers"""
+from django.http.response import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status, serializers
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+
 
 from whattodoapi.models import Tags
 
@@ -11,9 +14,20 @@ class TagViewSet(ViewSet):
 
     def list(self,request):
         """GET all tag object"""
-        Tag = Tags.objects.all()
-        serialized_Tag = TagSerializer(Tag, many=True)
+        tag = Tags.objects.all()
+        serialized_Tag = TagSerializer(tag, many=True)
         return Response(serialized_Tag.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        """Handles get requests for a single tag"""
+        try:
+            tag = Tags.objects.get(pk=pk)
+            serializer = TagSerializer(tag, context={'request': request})
+            return Response(serializer.data)
+        except Exception as ex:
+            return HttpResponseServerError(ex)
+
+
 
     def create(self, request):
         """Handle POST requests for tags"""
