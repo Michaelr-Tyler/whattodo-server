@@ -15,6 +15,11 @@ class TodoViewSet(ViewSet):
     def list(self,request):
         """GET a Todo object"""
         todos = Todos.objects.all()
+        
+        # e.g.: /posts?categories=1
+        category_id = self.request.query_params.get('categories', None)
+        if category_id is not None:
+            todos = todos.filter(category_id=category_id)
         serialized_todos = TodoSerializer(todos, many=True, context={'request': request})
         return Response(serialized_todos.data, status=status.HTTP_200_OK)
 
