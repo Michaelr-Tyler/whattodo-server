@@ -16,7 +16,7 @@ class TodoViewSet(ViewSet):
         """GET a Todo object"""
         todos = Todos.objects.all()
         
-        # e.g.: /posts?user_id=1
+        # e.g.: /posts?categories=1
         category_id = self.request.query_params.get('categories', None)
         if category_id is not None:
             todos = todos.filter(category_id=category_id)
