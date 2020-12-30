@@ -21,7 +21,7 @@
         "model": "whattodoapi.categories",
         "pk": 4,
         "fields": {
-            "label": "Delete"
+            "label": "Eliminate"
         }
     }
 ]

@@ -14,7 +14,9 @@ class TodoViewSet(ViewSet):
 
     def list(self,request):
         """GET a Todo object"""
-        todos = Todos.objects.all()
+        app_user = User.objects.get(id=request.auth.user.id)
+
+        todos = Todos.objects.filter(user_id=app_user)
         
         # e.g.: /posts?categories=1
         category_id = self.request.query_params.get('categories', None)
