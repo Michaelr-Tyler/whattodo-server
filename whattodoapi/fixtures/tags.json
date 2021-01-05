@@ -3,25 +3,29 @@
         "model": "whattodoapi.tags",
         "pk": 1,
         "fields": {
-            "label": "School"
+            "label": "School",
+            "author": 1
         }
     }, {
         "model": "whattodoapi.tags",
         "pk": 2,
         "fields": {
-            "label": "Work"
+            "label": "Work",
+            "author": 1
         }
     }, {
         "model": "whattodoapi.tags",
         "pk": 3,
         "fields": {
-            "label": "Vacation"
+            "label": "Vacation",
+            "author": 1
         }
     }, {
         "model": "whattodoapi.tags",
         "pk": 4,
         "fields": {
-            "label": "Family"
+            "label": "Family",
+            "author": 1
         }
     }
 ]
