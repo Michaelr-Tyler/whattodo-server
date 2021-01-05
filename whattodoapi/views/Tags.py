@@ -14,9 +14,11 @@ class TagViewSet(ViewSet):
 
     def list(self,request):
         """GET all tag object"""
-        tag = Tags.objects.all()
-        serialized_Tag = TagSerializer(tag, many=True)
-        return Response(serialized_Tag.data, status=status.HTTP_200_OK)
+        app_user = User.objects.get(id=request.auth.user.id)
+
+        tags = Tags.objects.filter(author=app_user)
+        serialized_Tags = TagSerializer(tags, many=True)
+        return Response(serialized_Tags.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
         """Handles get requests for a single tag"""
@@ -31,8 +33,10 @@ class TagViewSet(ViewSet):
 
     def create(self, request):
         """Handle POST requests for tags"""
+        app_user = User.objects.get(id=request.auth.user.id)
         tag = Tags()
         tag.label = request.data["label"]
+        tag.author = app_user
         
         try:
             tag.save()
@@ -66,4 +70,4 @@ class TagSerializer(serializers.ModelSerializer):
     """JSON serializer for Tag"""
     class Meta:
         model = Tags
-        fields = ('id', 'label')
+        fields = ('id', 'label', 'author')
