@@ -8,3 +8,4 @@ class Tags(models.Model):
     label = models.CharField(max_length=25)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     
+#a note
