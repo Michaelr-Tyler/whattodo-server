@@ -7,3 +7,4 @@ class Tags(models.Model):
     """Tag database model"""
     label = models.CharField(max_length=25)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    
