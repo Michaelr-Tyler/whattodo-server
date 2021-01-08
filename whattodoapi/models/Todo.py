@@ -20,3 +20,4 @@ class Todos(models.Model):
         """
         todo_tags = self.todotags_set.all()
         return [ td.tag for td in todo_tags]
+        

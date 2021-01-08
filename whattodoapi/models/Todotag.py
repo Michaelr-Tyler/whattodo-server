@@ -6,3 +6,4 @@ class TodoTags(models.Model):
     todo = models.ForeignKey("Todos", on_delete=models.CASCADE)
     tag = models.ForeignKey("Tags", on_delete=models.CASCADE)
     
+# 
