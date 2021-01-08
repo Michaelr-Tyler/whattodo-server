@@ -26,7 +26,8 @@ SECRET_KEY = '!^&&+xd1y17(nf8we#7cdlh-!29=#55br=2-so_-puualghj5h'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'michaeltyler.pythonanywhere.com'
+    'michaeltyler.pythonanywhere.com',
+    'localhost'
     ]
 
 
@@ -58,7 +59,8 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
-    'http://127.0.0.1:3000'
+    'http://127.0.0.1:3000',
+    'https://importantvsurgentmatrix.herokuapp.com'
 )
 
 MIDDLEWARE = [
