@@ -5,9 +5,6 @@ from rest_framework.response import Response
 from rest_framework import status, serializers
 from whattodoapi.models import Todos, Tags, Categories, TodoTags
 from django.contrib.auth.models import User
-from rest_framework.response import Response
-
-
 
 class TodoViewSet(ViewSet):
     """Todo view set"""
@@ -18,10 +15,20 @@ class TodoViewSet(ViewSet):
 
         todos = Todos.objects.filter(user_id=app_user)
         
-        # e.g.: /posts?categories=1
+        # e.g.: /todos?categories=1
         category_id = self.request.query_params.get('categories', None)
         if category_id is not None:
             todos = todos.filter(category_id=category_id)
+
+        # e.g.: /todos?tags=1
+    #first find the tag id the client wants to filter by
+    #if tag is there then we need to find all todos that contain that tag in its tags array
+        tag_id = self.request.query_params.get('tagId', None)
+        if tag_id is not None:
+            todotags = TodoTags.objects.filter(tag_id=tag_id)
+            todos = [todotag.todo for todotag in todotags]
+                    
+
         serialized_todos = TodoSerializer(todos, many=True, context={'request': request})
         return Response(serialized_todos.data, status=status.HTTP_200_OK)
 
@@ -118,15 +125,15 @@ class TodoViewSet(ViewSet):
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
 
     #now we need to grab the Todo tags and delete any no longer associated with the todo as well as any new ones
-        current_todotags = TodoTags.objects.filter(todo=todo)
+        selected_todotags = TodoTags.objects.filter(todo=todo)
     # create new queryset from the collection above that is ONLY those todotags for which the 'tag' attribute value doesn't match
     # any of the tags specified in the request. Then delete them all.
-        current_todotags.exclude(tag__in=request_tags).delete()
-    # for each tag in the set of 'tags' from the request, try to find an existing entry in the current_todotags that
+        selected_todotags.exclude(tag__in=request_tags).delete()
+    # for each tag in the set of 'tags' from the request, try to find an existing entry in the selected_todotags that
     # matches that relationship; if one doesn't exist, create it
         for tag in request_tags:
             try:
-                current_todotags.get(tag=tag)
+                selected_todotags.get(tag=tag)
             except TodoTags.DoesNotExist:
                 new_todotag = TodoTags(todo=todo, tag=tag)
                 new_todotag.save()
